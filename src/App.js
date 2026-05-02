@@ -1,5 +1,7 @@
 import './App.css';
 import Header from './Header';
+import Tableau from './components/Tableau'
+
 
 function App() {
   return (
