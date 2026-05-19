@@ -36,3 +36,23 @@ padding: 12px;
     margin-right: 12px;
   }
 }
+
+
+.aucun-resultat {
+  background-color: #ffeaea;
+  color: #c0392b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+
+.compteur-recherche {
+  background-color: #eef7ee;
+  color: #0a6e31;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}

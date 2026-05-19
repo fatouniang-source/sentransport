@@ -13,6 +13,7 @@ import DetailLigne from './DetailLigne';
 function App() {
   const [recherche, setRecherche] = useState("");
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
+  const [nombreRecherches, setNombreRecherches] = useState(0);
 
   const lignes = [
     { id: 1, numero: "1", depart: "Parcelles Assainies", arrivee: "Plateau", arrets: 14, listeArrets: ["Parcelles U14", "Parcelles U10","Camberene", "Patte d'Oie", "Grand Dakar","Colobane", "Ponty",  "Plateau"] },
@@ -40,15 +41,24 @@ function App() {
     }
   }
 
+  function handleRecherche(texte) {
+  setRecherche(texte);
+  setNombreRecherches(nombreRecherches + 1);
+}
+
  
 return (
     <div className="App">
       <Header />
 
       <main className="contenu">
+        <p className="compteur-recherche">
+          Vous avez effectué {nombreRecherches} recherche(s)
+        </p>
         <Recherche
           valeur={recherche}
           onChange={setRecherche}
+          onEffacer={() => setRecherche("")}
         />
 
         <p className="resultat-recherche">
@@ -56,6 +66,13 @@ return (
           {lignesFiltrees.length > 1 ? 's' : ''} trouvée
           {lignesFiltrees.length > 1 ? 's' : ''}
         </p>
+
+        {lignesFiltrees.length === 0 && (
+          <p className="aucun-resultat">
+            Aucune ligne trouvée
+          </p>
+        )}
+
 
         {lignesFiltrees.map((ligne) => (
           <LigneBus
@@ -76,6 +93,7 @@ return (
 
         {ligneSelectionnee && (
           <DetailLigne
+             key={ligneSelectionnee.id}
             ligne={ligneSelectionnee}
           />
         )}
