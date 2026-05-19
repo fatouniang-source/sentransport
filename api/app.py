@@ -1,5 +1,6 @@
 import json
-from flask import Flask, jsonify
+#from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -33,5 +34,73 @@ def get_ligne(ligne_id):
 
     return jsonify(ligne)
 
+
+# =========================
+# EXERCICE 1 : /arrets
+# =========================
+@app.route("/arrets")
+def get_arrets():
+
+    tous_les_arrets = set()
+
+    for ligne in lignes:
+        for arret in ligne["listeArrets"]:
+            tous_les_arrets.add(arret)
+
+    return jsonify(list(tous_les_arrets))
+
+
+
+#exo 2
+@app.route("/stats")
+def get_stats():
+
+    nombre_lignes = len(lignes)
+
+    total_arrets = sum(
+        ligne["arrets"] for ligne in lignes
+    )
+
+    ligne_plus_arrets = max(
+        lignes,
+        key=lambda ligne: ligne["arrets"]
+    )
+
+    return jsonify({
+        "nombre_total_lignes": nombre_lignes,
+        "nombre_total_arrets": total_arrets,
+        "ligne_avec_plus_arrets": ligne_plus_arrets["numero"]
+    })
+
+
+
+
+#exo3
+@app.route("/lignes/recherche")
+def rechercher_lignes():
+
+    q = request.args.get("q", "").lower()
+
+    resultats = []
+
+    for ligne in lignes:
+
+        depart = ligne["depart"].lower()
+        arrivee = ligne["arrivee"].lower()
+
+        if q in depart or q in arrivee:
+            resultats.append(ligne)
+
+    return jsonify(resultats)
+
+
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
+
+

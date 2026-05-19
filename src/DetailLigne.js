@@ -13,7 +13,7 @@ function DetailLigne({ ligne }) {
             <div className="detail-arrets">
                 <h4>Arrets principaux :</h4>
                 <ul className="detail-liste">
-                    {ligne.listeArrets.map((arret, index) => (
+                    {ligne.listeArrets && ligne.listeArrets.map((arret, index) => (
                         <li key={index} className="detail-arret">
                             <span className="arret-numero">{index + 1}</span>
                             <span className="arret-nom">{arret}</span>
