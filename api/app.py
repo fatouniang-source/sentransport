@@ -1,64 +1,114 @@
 import json
-#from flask import Flask, jsonify
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Autoriser React à accéder à Flask
 CORS(app)
 
-# Charger les données depuis le fichier JSON
-with open("lignes_ddd.json", "r") as f:
+# =========================
+# Charger les données JSON
+# =========================
+
+with open("lignes_ddd.json", "r", encoding="utf-8") as f:
     lignes = json.load(f)
+
+
+with open("arrets.json", "r", encoding="utf-8") as f:
+    arrets = json.load(f)
+
+
+@app.route("/arrets")
+def get_arrets():
+
+    return jsonify(arrets)
+
+# =========================
+# Route accueil
+# =========================
 
 @app.route("/")
 def accueil():
+
     return jsonify({
         "message": "Bienvenue sur l'API SenTransport !",
-        "endpoints": ["/lignes", "/lignes/<id>"]
+
+        "endpoints": [
+            "/lignes",
+            "/lignes/<id>",
+            "/arrets",
+            "/stats",
+            "/lignes/recherche?q=..."
+        ]
     })
+
+# =========================
+# Toutes les lignes
+# =========================
 
 @app.route("/lignes")
 def get_lignes():
+
     return jsonify(lignes)
+
+# =========================
+# Une ligne par ID
+# =========================
 
 @app.route("/lignes/<int:ligne_id>")
 def get_ligne(ligne_id):
 
     ligne = next(
-        (l for l in lignes if l["id"] == ligne_id),
+        (
+            l for l in lignes
+            if l["id"] == ligne_id
+        ),
         None
     )
 
     if ligne is None:
-        return jsonify({"erreur": "Ligne non trouvee"}), 404
+
+        return jsonify({
+            "erreur": "Ligne non trouvée"
+        }), 404
 
     return jsonify(ligne)
-
 
 # =========================
 # EXERCICE 1 : /arrets
 # =========================
-@app.route("/arrets")
-def get_arrets():
 
-    tous_les_arrets = set()
+# @app.route("/arrets")
+# def get_arrets():
 
-    for ligne in lignes:
-        for arret in ligne["listeArrets"]:
-            tous_les_arrets.add(arret)
+#     tous_les_arrets = set()
 
-    return jsonify(list(tous_les_arrets))
+#     for ligne in lignes:
 
+#         if "listeArrets" in ligne:
 
+#             for arret in ligne["listeArrets"]:
 
-#exo 2
+#                 tous_les_arrets.add(arret)
+
+#     return jsonify(
+#         sorted(list(tous_les_arrets))
+#     )
+
+# =========================
+# EXERCICE 2 : /stats
+# =========================
+
 @app.route("/stats")
 def get_stats():
 
     nombre_lignes = len(lignes)
 
     total_arrets = sum(
-        ligne["arrets"] for ligne in lignes
+        ligne["arrets"]
+        for ligne in lignes
     )
 
     ligne_plus_arrets = max(
@@ -67,15 +117,19 @@ def get_stats():
     )
 
     return jsonify({
+
         "nombre_total_lignes": nombre_lignes,
+
         "nombre_total_arrets": total_arrets,
-        "ligne_avec_plus_arrets": ligne_plus_arrets["numero"]
+
+        "ligne_avec_plus_arrets":
+            ligne_plus_arrets["numero"]
     })
 
+# =========================
+# EXERCICE 3 : recherche
+# =========================
 
-
-
-#exo3
 @app.route("/lignes/recherche")
 def rechercher_lignes():
 
@@ -89,18 +143,212 @@ def rechercher_lignes():
         arrivee = ligne["arrivee"].lower()
 
         if q in depart or q in arrivee:
+
             resultats.append(ligne)
 
     return jsonify(resultats)
 
-
-
-
-
-
+# =========================
+# Lancer Flask
+# =========================
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+
+    app.run(
+        debug=True,
+        port=5000
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import json
+# #from flask import Flask, jsonify
+# from flask import Flask, jsonify, request
+# from flask_cors import CORS
+
+# app = Flask(__name__)
+# CORS(app)
+
+# # Charger les données depuis le fichier JSON
+# with open("lignes_ddd.json", "r") as f:
+#     lignes = json.load(f)
+
+# @app.route("/")
+# def accueil():
+#     return jsonify({
+#         "message": "Bienvenue sur l'API SenTransport !",
+#         "endpoints": ["/lignes", "/lignes/<id>"]
+#     })
+
+# @app.route("/lignes")
+# def get_lignes():
+#     return jsonify(lignes)
+
+# @app.route("/lignes/<int:ligne_id>")
+# def get_ligne(ligne_id):
+
+#     ligne = next(
+#         (l for l in lignes if l["id"] == ligne_id),
+#         None
+#     )
+
+#     if ligne is None:
+#         return jsonify({"erreur": "Ligne non trouvee"}), 404
+
+#     return jsonify(ligne)
+
+
+# # =========================
+# # EXERCICE 1 : /arrets
+# # =========================
+# @app.route("/arrets")
+# def get_arrets():
+
+#     tous_les_arrets = set()
+
+#     for ligne in lignes:
+#         for arret in ligne["listeArrets"]:
+#             tous_les_arrets.add(arret)
+
+#     return jsonify(list(tous_les_arrets))
+
+
+
+# #exo 2
+# @app.route("/stats")
+# def get_stats():
+
+#     nombre_lignes = len(lignes)
+
+#     total_arrets = sum(
+#         ligne["arrets"] for ligne in lignes
+#     )
+
+#     ligne_plus_arrets = max(
+#         lignes,
+#         key=lambda ligne: ligne["arrets"]
+#     )
+
+#     return jsonify({
+#         "nombre_total_lignes": nombre_lignes,
+#         "nombre_total_arrets": total_arrets,
+#         "ligne_avec_plus_arrets": ligne_plus_arrets["numero"]
+#     })
+
+
+
+
+# #exo3
+# @app.route("/lignes/recherche")
+# def rechercher_lignes():
+
+#     q = request.args.get("q", "").lower()
+
+#     resultats = []
+
+#     for ligne in lignes:
+
+#         depart = ligne["depart"].lower()
+#         arrivee = ligne["arrivee"].lower()
+
+#         if q in depart or q in arrivee:
+#             resultats.append(ligne)
+
+#     return jsonify(resultats)
+
+
+
+
+
+
+
+# if __name__ == "__main__":
+#     app.run(debug=True, port=5000)
 
 
 

@@ -81,3 +81,27 @@ padding: 12px;
   font-family: monospace;
   font-size: 0.9rem;
 }
+
+
+
+.btn-recharger {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.btn-recharger:hover {
+  opacity: 0.9;
+}
+
+
+.zone-carte {
+
+  margin-top: 30px;
+
+  margin-bottom: 30px;
+}
